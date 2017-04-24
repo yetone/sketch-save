@@ -187,19 +187,17 @@ var SS = (function() {
             savePath += '.sketch';
         }
         var tmpDir = toJSString(NSTemporaryDirectory()) + toJSString(NSUUID.UUID());
-        var dupPath = pathJoin(tmpDir, 'dup.sketch');
         var unzipDir = pathJoin(tmpDir, 'unzip');
         var previewPath = pathJoin(unzipDir, '/previews/preview.png');
         var imgPath = this.exportImage({
-            layer: this.artboard,
+            layer: this.artboard || this.page.artboards()[0],
             scale: 2
         });
 
         run([
             'rm', '-rf', tmpDir,
             '&&', 'mkdir', '-p', unzipDir,
-            '&&', 'cp', quoteStr(filePath), dupPath,
-            '&&', 'unzip', dupPath, '-d', unzipDir,
+            '&&', 'unzip', quoteStr(filePath), '-d', unzipDir,
             '&&', 'mv', imgPath, previewPath,
             '&&', 'cd', unzipDir,
             '&&', 'zip', '-r', quoteStr(savePath), '.',
