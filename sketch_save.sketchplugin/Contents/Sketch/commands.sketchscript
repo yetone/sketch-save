@@ -1,0 +1,21 @@
+@import "lib/index.js"
+
+var flag = 917504
+
+function commandSave(context) {
+    var ss = new SS(context);
+    if (NSEvent.modifierFlags() == flag) {
+        ss.makeSavable(true);
+    } else {
+        ss.save();
+    }
+}
+
+function commandExport(context) {
+    var ss = new SS(context);
+    if (NSEvent.modifierFlags() == flag) {
+        ss.makeSavable(true);
+    } else {
+        ss.export();
+    }
+}

@@ -1,0 +1,34 @@
+{
+    "author": "yetone",
+    "commands" : [
+        {
+            "name": "Save sketch file",
+            "identifier": "commandSave",
+            "shortcut": "ctrl s",
+            "handler": "commandSave",
+            "script": "commands.sketchscript"
+        },
+        {
+            "name": "Export sketch file",
+            "identifier": "commandExport",
+            "shortcut": "ctrl e",
+            "handler": "commandExport",
+            "script": "commands.sketchscript"
+        }
+    ],
+    "menu" : {
+        "isRoot" : false,
+        "shortcut" : "",
+        "items" : [
+            "commandSave",
+            "commandExport"
+        ],
+        "title" : "Sketch Save"
+    },
+    "identifier": "com.yetone.sketch_save",
+    "homepage": "https://github.com/yetone/sketch-save",
+    "version": "0.1",
+    "description" : "Save sketch file with large preview png",
+    "authorEmail" : "yetoneful@gmail.com",
+    "name" : "Sketch Save"
+}
