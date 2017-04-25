@@ -15,6 +15,8 @@ function run(cmd) {
     task.setLaunchPath('/bin/bash');
     task.setArguments(['-c', cmd]);
     task.launch();
+    task.waitUntilExit();
+    return task.terminationStatus() == 0;
 }
 
 function is(layer, theClass) {
@@ -194,7 +196,7 @@ var SS = (function() {
             scale: 2
         });
 
-        run([
+        var res = run([
             'rm', '-rf', tmpDir,
             '&&', 'mkdir', '-p', unzipDir,
             '&&', 'unzip', quoteStr(filePath), '-d', unzipDir,
@@ -204,7 +206,11 @@ var SS = (function() {
             '&&', 'rm', '-rf', tmpDir
         ].join(' '));
 
-        this.message('Saved to ' + savePath);
+        if (res) {
+            this.message('Saved to ' + savePath);
+        } else {
+            this.message('Save failed!')
+        }
     };
 
     fn.makeSavable = function(optionKey) {
