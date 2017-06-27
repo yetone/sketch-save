@@ -22,7 +22,7 @@ function run(cmd) {
 function is(layer, theClass) {
     if(!layer) return false;
     var klass = layer.class();
-    return klass === theClass;
+    return klass == theClass;
 }
 
 function toJSString(str) {
@@ -68,8 +68,6 @@ var SS = (function() {
         this.window = this.document.window();
         this.pages = this.document.pages();
         this.page = this.document.currentPage();
-        this.artboard = this.page.currentArtboard();
-        this.current = this.artboard || this.page;
         this.extend(context);
     }
 
@@ -136,7 +134,7 @@ var SS = (function() {
 
     fn.exportImage = function(options) {
         options = this.extend(options, {
-            layer: this.artboard,
+            layer: void 0,
             path: toJSString(NSTemporaryDirectory()),
             scale: 1,
             name: 'preview',
@@ -191,10 +189,12 @@ var SS = (function() {
         var tmpDir = toJSString(NSTemporaryDirectory()) + toJSString(NSUUID.UUID());
         var unzipDir = pathJoin(tmpDir, 'unzip');
         var previewPath = pathJoin(unzipDir, '/previews/preview.png');
+        var layer = this.getDummyLayer();
         var imgPath = this.exportImage({
-            layer: this.artboard || this.page.artboards()[0],
+            layer: layer,
             scale: 2
         });
+        layer.parentGroup().removeLayer(layer);
 
         var res = run([
             'rm', '-rf', tmpDir,
@@ -253,6 +253,28 @@ var SS = (function() {
             }
         }
     };
+
+    fn.getDummyLayer = function() {
+        var minX = minY = maxX = maxY = 0
+        var layers = this.context.document.currentPage().layers()
+        layers.forEach(function(layer) {
+            var r = layer.rect()
+            minX = Math.min(r.origin.x, minX)
+            minY = Math.min(r.origin.y, minY)
+            maxX = Math.max(r.origin.x + r.size.width, maxX)
+            maxY = Math.max(r.origin.y + r.size.height, maxY)
+        })
+
+        var newArtboard = MSArtboardGroup.new()
+        newArtboard.setName('dummy')
+        var artboardFrame = newArtboard.frame()
+        artboardFrame.setX(minX)
+        artboardFrame.setY(minY)
+        artboardFrame.setWidth(maxX - minX)
+        artboardFrame.setHeight(maxY - minY)
+        this.context.document.currentPage().addLayers([newArtboard])
+        return newArtboard
+    }
 
     return SS;
 }());
