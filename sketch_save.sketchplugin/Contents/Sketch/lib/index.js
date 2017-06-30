@@ -255,7 +255,8 @@ var SS = (function() {
     };
 
     fn.getDummyLayer = function() {
-        var minX = minY = maxX = maxY = 0
+        var minX = minY = Infinity
+        var maxX = maxY = -Infinity
         var layers = this.context.document.currentPage().layers()
         layers.forEach(function(layer) {
             var r = layer.rect()
